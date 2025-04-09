@@ -27,6 +27,7 @@ app.get("/authService/api/v1/home", (req, res) => {
 
 // Start server
 app.listen(PORT, () => {
+  
   console.log(`Auth Service running on port: ${PORT}`);
 });
 

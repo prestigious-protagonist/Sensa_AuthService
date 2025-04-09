@@ -74,10 +74,16 @@ class UserService {
             }
             const user = await this.UserRepository.getById(response.id);
             if(!user) {
-                throw {error: "User for this token doesn't exist."};
+                throw new ClientError({
+                    name: "Authentication Failed",
+                    message: "Invalid Token",
+                    explanation: "Token mismatch/ expired",
+                    statusCode: StatusCodes.UNAUTHORIZED, 
+                });
             }
             return user.dataValues;
         } catch (error) {
+            console.log(error)
             console.log("Something went wrong in user Authentication.");
             throw error;
         }

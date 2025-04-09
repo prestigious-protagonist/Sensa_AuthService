@@ -3,6 +3,7 @@ const cookieParser = require('cookie-parser');
 const {rateLimit} = require('express-rate-limit')
 const bodyParser = require('body-parser')
 const ClientError = require('../../utils/client-error')
+const {User} = require("../../models/index")
 const router =  express.Router()
 router.use(cookieParser('your_secret_key'));
 const limiter = rateLimit({
@@ -14,8 +15,28 @@ const UserController = require('../../controller/user-controller')
 
 
 const {validateUserAuth, validateIsAdminRequest, validateLogin, validateForgotPassRequest, validateResetPassRequest} = require('../../middleware/index');
-const {User} = require("../../models/user");
 
+router.delete("/deleteAccount", async (req, res) => {
+  console.log("reached inside")
+  const { email } = req.query;
+
+  if (!email) {
+    return res.status(400).json({ success: false, message: "Email is required" });
+  }
+
+  try {
+    const response = await User.destroy({
+      where:{
+        email
+      }
+    })
+    if(!response) throw new Error("cannot delete")
+    return res.status(200).json({ success: true, message: "Account deleted" });
+  } catch (err) {
+    console.error("Error deleting account:", err);
+    return res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+});
 
 router.post('/users', validateUserAuth, UserController.create) //signup
 

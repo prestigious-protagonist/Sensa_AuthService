@@ -5,11 +5,11 @@ const ValidationError = require('../utils/validation-error');
 const { Op } = require('sequelize');
 const bcrypt = require('bcrypt');
 const { SALT } = require('../config/serverConfig');
-
+const { v4: uuidv4 } = require('uuid');
 class UserRepository {
     async create(data) {
         try {
-            
+            data.id = uuidv4()
             const user = await User.create(data);
             //role.addUser(user)
             //after user Creation, bydefault make them a user (Not an admin)
@@ -21,6 +21,7 @@ class UserRepository {
             await role.addUser(user) 
             return user;
         } catch (error) {
+            console.log(error)
             if(error.name == "SequelizeValidationError") {
                 throw new ValidationError(error);
             }

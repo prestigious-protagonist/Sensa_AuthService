@@ -5,10 +5,11 @@ module.exports = {
     await queryInterface.createTable('Users', {
       id: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
-      },
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.UUIDV4,  
+      }
+      ,
       email: {
         type: Sequelize.STRING,
         allowNull: false,
@@ -21,9 +22,17 @@ module.exports = {
       password: {
         type: Sequelize.STRING,
         validate: {
-          allowNull: false,
-          len: [8, 100]
-        }
+                isStrong(value) {
+                  if (!validator.isStrongPassword(value, {  
+                    minLength: 8,
+                    minLowercase: 1,
+                    minUppercase: 1,
+                    minNumbers: 1,
+                    minSymbols: 1 })) {
+                    throw new Error('Password must be at least 8 characters long at least one symbol, lowercase character, uppercase character, number.');
+                  }
+                }
+              }
       },
       createdAt: {
         allowNull: false,

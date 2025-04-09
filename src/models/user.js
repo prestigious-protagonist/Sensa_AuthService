@@ -1,3 +1,4 @@
+const validator = require("validator")
 'use strict';
 const {
   Model
@@ -13,10 +14,11 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      this.belongsToMany(models.Role,{
-        through: 'User_Roles'
-        
-      })
+      this.belongsToMany(models.Role, {
+        through: models.user_roles, // Explicit model reference
+        foreignKey: 'userId'
+      });
+      
     }
   }
   User.init({
@@ -33,12 +35,22 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        len:[8,100]
+        isStrong(value) {
+          if (!validator.isStrongPassword(value, {  
+            minLength: 8,
+            minLowercase: 1,
+            minUppercase: 1,
+            minNumbers: 1,
+            minSymbols: 1 })) {
+            throw new Error('Password must be at least 8 characters long at least one symbol, lowercase character, uppercase character, number.');
+          }
+        }
       }
     }
   }, {
     sequelize,
     modelName: 'User',
+    tableName: 'users'
   });
   User.beforeCreate((user) => {
    
