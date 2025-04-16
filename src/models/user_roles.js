@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     userId: {
       type:DataTypes.UUID,
       references:{
-        model: 'users',
+        model: 'Users',
         key: 'id'
       },
       
@@ -27,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
     roleId:{
       type: DataTypes.UUID,
       references:{
-        model: 'roles',
+        model: 'Roles',
         key: 'id'
       },
       

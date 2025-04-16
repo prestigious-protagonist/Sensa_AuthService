@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      this.belongsToMany(models.Role, {
+      this.belongsToMany(models.Roles, {
         through: models.user_roles, // Explicit model reference
         foreignKey: 'userId'
       });
@@ -50,7 +50,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'User',
-    tableName: 'users'
+    tableName: 'Users'
   });
   User.beforeCreate((user) => {
    
