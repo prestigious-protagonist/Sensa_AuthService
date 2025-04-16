@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require("express");
 const app = express();
 const { PORT, DB_SYNC } = require("./config/serverConfig");
@@ -26,8 +28,9 @@ app.get("/authService/api/v1/home", (req, res) => {
 });
 
 // Start server
-app.listen(PORT, () => {
+app.listen(PORT, async() => {
   
+
   console.log(`Auth Service running on port: ${PORT}`);
 });
 
