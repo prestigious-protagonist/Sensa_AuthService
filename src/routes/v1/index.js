@@ -5,6 +5,14 @@ const bodyParser = require('body-parser')
 const ClientError = require('../../utils/client-error')
 const {User} = require("../../models/index")
 const router =  express.Router()
+
+const { clerkMiddleware } = require('@clerk/express')
+router.use(
+  clerkMiddleware({
+    publishableKey: process.env.CLERK_PUBLISHABLE_KEY,
+    secretKey: process.env.CLERK_SECRET_KEY,  // Make sure this is defined in .env
+  })
+);
 router.use(cookieParser('your_secret_key'));
 const limiter = rateLimit({
 	windowMs: 10 * 60 * 1000,
@@ -38,9 +46,6 @@ router.delete("/deleteAccount", async (req, res) => {
   }
 });
 
-router.post('/users', validateUserAuth, UserController.create) //signup
-
-router.get('/users/status/isAuthenticated',validateLogin,UserController.isAuthenticated)
 router.get('/users/status/isAdmin/:userId',validateIsAdminRequest ,UserController.isAdmin)
 // Sample users list (Replace with database later)
 const users = [
@@ -51,19 +56,15 @@ const users = [
   ];
   
   // Get all users
-  router.get("/getAll", (req, res) => {
+  router.get("/", (req, res) => {
+    console.log("PPPPPPPPPPPPPPPPPPPPPPPP")
+    console.log(req.auth?.sessionClaims?.userEmail)
     res.json(users);
   });
 
-router.post('/users/session', validateUserAuth ,UserController.signIn) //signin
-router.delete('/users/session', validateLogin,UserController.logout)                  //logout
 
 
-router.get('/users/password/forgot',limiter, validateForgotPassRequest,UserController.forgotPass)
-router.patch('/users/password/reset', validateResetPassRequest, UserController.resetPass)
-
-
-router.use((err, req, res, next) => {
+router.use((err, req, res, next) => {  
     
     if (err instanceof ClientError) {
         return res.status(err.statusCode).json({

@@ -8,4 +8,5 @@ module.exports = {
     CRYPTO_KEY: process.env.CRYPTO_KEY,
     EMAIL_ID: process.env.EMAIL_ID,
     EMAIL_PASS: process.env.EMAIL_PASS,
+    CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY
 }

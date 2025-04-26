@@ -63,25 +63,14 @@ class UserService {
     }
     async isAuthenticated(token) {
         try {
-            const response = await this.verifyToken(token);
-            if(!response) {
-                throw new ClientError({
-                    name: "Authentication Failed",
-                    message: "Invalid Token",
-                    explanation: "Token mismatch/ expired",
-                    statusCode: StatusCodes.UNAUTHORIZED, 
+            if (!token) {
+                return res.status(StatusCodes.UNAUTHORIZED).json({
+                    error: "Unauthorized",
+                    message: "No token provided",
                 });
             }
-            const user = await this.UserRepository.getById(response.id);
-            if(!user) {
-                throw new ClientError({
-                    name: "Authentication Failed",
-                    message: "Invalid Token",
-                    explanation: "Token mismatch/ expired",
-                    statusCode: StatusCodes.UNAUTHORIZED, 
-                });
-            }
-            return user.dataValues;
+            const isAuthenticated = await this.UserRepository.isAuthenticated(token)
+            return isAuthenticated
         } catch (error) {
             console.log(error)
             console.log("Something went wrong in user Authentication.");
