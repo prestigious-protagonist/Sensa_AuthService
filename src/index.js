@@ -21,7 +21,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // API Routes
 const apiRouter = require("./routes/index");
 app.use("/authService/api", apiRouter); // All routes start from "/api"
-app.get('/', (req, res)=> {res.send("HI")})
+app.get('/', (req, res)=> {res.send("You are hitting the auth Service.")})
 // Basic route for testing
 app.get("/authService/api/v1/home", (req, res) => {
   res.send("Hello from Auth Service");
